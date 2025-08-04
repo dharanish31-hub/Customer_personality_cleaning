@@ -1,48 +1,29 @@
 # Customer_personality_cleaning
-import pandas as pd
-import os
-from datetime import datetime
+ Marketing Campaign Data Cleaning Project
 
-file_path = r"C:\Users\Parid\Contacts\archive\marketing_campaign.csv"
+This project involves cleaning and preprocessing a marketing campaign dataset to prepare it for analysis and modeling.
 
-if not os.path.exists(file_path):
-    print(f"❌ File not found at: {file_path}")
-    exit()
+## 📊 Dataset Overview
 
-df = pd.read_csv(file_path, sep='\t')
-print("✅ File loaded successfully!\n")
-print(df.head())
+- **Source**: [Kaggle - Customer Personality Analysis](https://www.kaggle.com/datasets/imakash3011/customer-personality-analysis)
+- **File used**: `marketing_campaign.csv` (tab-separated)
+- The dataset includes customer demographics, campaign history, purchase behavior, and response to marketing offers.
 
+---
 
-df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
-print("\n📌 Renamed columns:")
-print(df.columns)
+Cleaning & Preprocessing Steps
 
-
-print("\n📌 Missing values before cleaning:")
-print(df.isnull().sum())
-
-df = df.dropna()  
-
-
-df = df.drop_duplicates()
+1. Loaded the tab-separated dataset using `pandas.read_csv(sep='\t')`
+2. Renamed columns to lowercase, snake_case (e.g., `Year_Birth` → `year_birth`)
+3. Handled missing values by dropping rows with null `income`
+4. Removed duplicate rows
+5. Converted the `dt_customer` column to `datetime` format
+6. Standardized text values in `education` and `marital_status`
+7. Created a new feature: `customer_since_years` based on `dt_customer`
+8. Fixed data types for numeric fields: `income`, `kidhome`, and `teenhome`
+9. Saved the cleaned dataset to `cleaned_marketing_campaign.csv`
 
 
-df['dt_customer'] = pd.to_datetime(df['dt_customer'], format="%d-%m-%Y")
 
 
-df['education'] = df['education'].str.lower().str.strip()
-df['marital_status'] = df['marital_status'].str.lower().str.strip()
 
-
-df['customer_since_years'] = datetime.now().year - df['dt_customer'].dt.year
-
-
-df['income'] = df['income'].astype(float)
-df['kidhome'] = df['kidhome'].astype(int)
-df['teenhome'] = df['teenhome'].astype(int)
-
-
-output_path = "cleaned_marketing_campaign.csv"
-df.to_csv(output_path, index=False)
-print(f"\n✅ Cleaned dataset saved as: {output_path}")
